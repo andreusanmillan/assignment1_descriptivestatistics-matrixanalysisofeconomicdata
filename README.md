@@ -1,5 +1,4 @@
-# assignment1_descriptivestatisticsmatrixanalysisofeconomicdata
-
+# assignment1_mda
 ## Overview
 This assignment analyzes a dataset of economic variables at the **CCAA level** through descriptive statistics and matrix analysis techniques. The objective is to practice core concepts in multivariate data analysis, including mean vectors, covariance and correlation matrices, standardization, and eigen decomposition.
 
