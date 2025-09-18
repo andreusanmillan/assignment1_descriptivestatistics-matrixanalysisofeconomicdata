@@ -1,0 +1,153 @@
+---
+title: "Assignment 1"
+author: "Andreu San Millan"
+date: "16/10/2024"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Assignment 1
+
+The following data matrix correspond to economic variables measured at the level of
+CCAA. Compute the following statistics.
+
+1. Mean vector
+1. Centered data matrix. I.e., a matrix where all columns have mean zero (call it Xc)
+1. Cross product matrix Xc’ Xc (call it Xpc)
+1. Covariance matrix (call it  S)
+1. Standardized data matrix Xs. I.e. you are dividing each variable by its corresponding sample standard deviation
+1. Correlation matrix 
+1. Eigen values and eigen vectors of Xc’ Xc
+1. Eigen values and eigen vectors S
+1. Construct the dispersion matrix and the correlation matrix of the standardized matrix Xs
+1. Eigenvalues and eigenvectors of the correlation matrix R
+
+### Solution
+
+```{r}
+### We load the data in R and we assign to an object called dades
+dades = read.table("https://www.econ.upf.edu/~satorra/dades/AMD1.txt", header=T)
+
+dades
+colnames(dades)                # column name (variables)
+rownames(dades)                # row names
+
+rownames(dades) <- dades[,1]   # assigning row names with the first column
+dades<-dades[,-1]
+
+class(dades)                   # a data.frame knows that the columns are our variables of interest
+
+
+X <- as.matrix(dades)          # we assing to X the data in a matrix class
+class(X)                       # for a matrix, the rows and columns have the same priority
+
+dim(X)                         # number of row and columns
+n <- dim(X)[1]                 # we assign to n the number of rows
+n
+
+#1. Searching for the mean vector (mean function):
+uns <- matrix(1,nrow=n,ncol=1) # vector of ones
+uns                            
+meanv = t(uns) %*% X / n       # mean vector
+meanv                          #  1x19  %*% 19x5 = 1x5
+
+#1.bis other ways to do it
+mean(dades)                    # to ask for the means in a data.frame
+mean(X)                        # ¡¡¡ERROR!!! Applied to a matrix return the global mean
+colMeans(X)                    # we can use colMeans
+?apply                         # Also apply
+apply(dades,2,mean)            # lets do sums (sum), standard deviations (sd),...
+
+round(meanv,3)                 # rounding the result to 3 decimals
+
+#2. Searching the Matrix of the centered data:
+uns %*% meanv
+Xc <- X - uns %*% meanv       # centered matrix
+Xc
+
+apply(Xc,2,mean)              # verifying that is centered
+
+#2.bis other ways to do it
+diag(7)                            # identity matrix of dimension n
+M <- diag(n) - uns %*% t(uns) / n  # centering Matrix
+M %*% X                            # centered matrix
+
+round(Xc,3)                        # presenting the rounded results
+
+#3. Searching the cross product matrix:
+Xc * Xc                      # ¡¡¡ERROR: That is the element by element product!!!
+Xpc = t(Xc) %*% Xc           # Cross product matrix
+Xpc                          # Look that is a square symmetric matrix
+
+apply(Xpc,2,mean)            # In general it is not centered (column mean different than 0)
+apply(Xpc,2, sd)             # In general it is not standardized (standard deviation different than 1)
+
+round(Xpc,3)                 # presenting the rounded results
+
+#4. The dispersion matrix:
+S = cov(X)                   # ¡¡¡Look how R also use n-1!!!
+
+round(S,3)                   # presenting the rounded results
+
+#5. Searching the standardized data matrix:
+diag(S)                      # Variance vector of X
+vsd = sqrt(diag(S))          # Saving the standard deviations of the original data
+vsd
+Xs = Xc %*% diag(1/vsd)      # Standardized data matrix
+Xs                           # Look that it is a square symmetric matrix.
+
+     
+colnames(Xs) <- c("CREIX","INF","ATUR","INT1","INT2")      # Recovering the variable names
+
+colnames(Xs) <- colnames(X)  # Equivalently
+
+apply(Xs,2,mean)             # verifying that it is centered
+apply(Xs,2, sd)              # verifying that it is standardized
+
+round(Xs,3)                  # presenting the rounded results
+
+#6. The correlation matrix:
+R = cor(X)                   # An alternative through R
+
+round(R,4)                   # presenting the rounded results
+
+#7. Eigen values and eigen vectors of Xc’ Xc
+eigxpc <- eigen(Xpc)
+
+round(eigxpc$vectors,3)   # eigen vectors
+
+round(eigxpc$values,3)   # eigen values
+
+
+#8. Eigen values and eigen vectors of S
+eigs <- eigen(S)
+
+round(eigs$vectors,3)   # eigen vectors
+
+round(eigs$values,3)   # eigen values
+
+#9.1. constructing the Dispersion Matrix (matrix version):
+S = Xpc / (n-1)              # Dispersion Matrix. 
+          ####¡¡¡WARNING!!! We divide by n-1 because it deletes the bias.
+S                            # Look that it is a square symmetric matrix
+
+#9.2. constructing the Correlation Matrix (matrix version):
+R = t(Xs) %*% Xs / (n-1)     # Correlation matrix
+R                            # Look that it is a sqaure symmetric matrix
+                             # With one in the diagonal
+                             # The other values are between -1 and 1.
+
+colnames(R) <- colnames(X)   # Recovering the names of the columns
+rownames(R) <- colnames(X)   # Recovering the names of the rows
+
+
+#10. Eigen values and eigen vectors of R
+eigr <- eigen(R)
+
+round(eigr$vectors,3)   # eigen vectors
+round(eigr$values,3)   # eigen values
+```
+
