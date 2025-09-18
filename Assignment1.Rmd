@@ -2,32 +2,7 @@
 title: "Assignment 1"
 author: "Andreu San Millan"
 date: "16/10/2024"
-output: html_document
----
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## Assignment 1
-
-The following data matrix correspond to economic variables measured at the level of
-CCAA. Compute the following statistics.
-
-1. Mean vector
-1. Centered data matrix. I.e., a matrix where all columns have mean zero (call it Xc)
-1. Cross product matrix Xc’ Xc (call it Xpc)
-1. Covariance matrix (call it  S)
-1. Standardized data matrix Xs. I.e. you are dividing each variable by its corresponding sample standard deviation
-1. Correlation matrix 
-1. Eigen values and eigen vectors of Xc’ Xc
-1. Eigen values and eigen vectors S
-1. Construct the dispersion matrix and the correlation matrix of the standardized matrix Xs
-1. Eigenvalues and eigenvectors of the correlation matrix R
-
-### Solution
-
-```{r}
 ### We load the data in R and we assign to an object called dades
 dades = read.table("https://www.econ.upf.edu/~satorra/dades/AMD1.txt", header=T)
 
